@@ -1,0 +1,5 @@
+*.swp
+rossby_waves
+tmp
+__pycache__
+.ipynb_checkpoints
