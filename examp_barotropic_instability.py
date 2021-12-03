@@ -16,8 +16,8 @@ exec(open('./shallowpy_defaults.py').read())
 run = __file__.split('/')[-1][:-3]
 path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
 
-nx = 250
-ny = 50
+nx = 256
+ny = 64
 nt = 6000
 nt = 5000
 
@@ -25,37 +25,49 @@ picture_frequency = 0
 output_frequency = 60
 diagnostic_frequency = output_frequency
 
-dx = 100e3
+dx = 10e3
 dy = dx
 #dt = 360.
-dt = 60.
+#dt = 60.
 
 grav = 9.81
 rho = np.array([1024.])
 nz = rho.size
 
-H0 = 1000.
-#cph = np.sqrt(grav*H0)
+H0 = 100.
+cph = np.sqrt(grav*H0)
 #dist = dt*nt * cph
-#dt  = 0.1*dx/np.sqrt(grav*H0)
+dt  = 0.1*dx/np.sqrt(grav*H0)
+dt = 90.
 ##dt = 360.
+
+U0 = 1.
+Ly = ny*dy
+kmax = 0.4/(Ly/2.)
+smax = 0.2*U0/(Ly/2.)
+Lmax = 1./kmax
+smax = 1./smax
+
+print(f'Lmax = {Lmax/1e3}km, smax = {smax/86400.}days')
+print(f'Tint = {nt*dt/86400.}days')
 
 nspx = 1
 nspy = 1
 epsab = 0.01
 
-kh = 1000.
+kh = 100.
 Ah = kh
 
-f0 = 1e-4
+f0 = 0.*1e-4
 beta = 0.*1e-11
 
 do_momentum_advection = True
 do_momentum_diffusion = True
 do_momentum_coriolis_exp = False
-do_momentum_coriolis_imp = True
+do_momentum_coriolis_imp = False
 do_momentum_pressure_gradient = True
 do_height_diffusion = False
+do_height_advection = True
 
 # Initialize the grid and initial conditions
 # ------------------------------------------
@@ -63,22 +75,34 @@ exec(open('./shallowpy_grid_setup.py').read())
 
 # Modify initial conditions
 # -------------------------
-#ho0 = 0.01*(Xt-Lx/2.)/Lx
-#ho0 = H0+0.1*np.sin(Xt/(Lx+dx)*2*np.pi*2)
-ho0 = H0+0.1 * np.tanh((Yt-0.5*Ly)/(0.2*Ly))
-ho0 = ho0[np.newaxis,:,:]
-#H0 = 0.
-#ho0 += H0
+##ho0 = 0.01*(Xt-Lx/2.)/Lx
+##ho0 = H0+0.1*np.sin(Xt/(Lx+dx)*2*np.pi*2)
+#ho0 = H0+0.1 * np.tanh((Yt-0.5*Ly)/(0.2*Ly))
+#ho0 = ho0[np.newaxis,:,:]
+##H0 = 0.
+##ho0 += H0
+#
+##uo0 = cph + 0.*Xu
+##uo0 = uo0[np.newaxis,:,:]
+#
+#ho0 += 1e-6*np.random.randn((nz*ny*nx)).reshape(nz,ny,nx)
+#
+#uo0[:,1:-1,:] = -grav/fu0[:,1:-1,:]*(ho0[:,2:,:]-ho0[:,:-2,:])/(2*dy)
+#
+#uo0_yy = np.ma.zeros((nz,ny,nx))
+#uo0_yy[:,1:-1,:] = (uo0[:,2:,:]-2.*uo0[:,1:-1,:]+uo0[:,:-2,:])/dy**2
 
-#uo0 = cph + 0.*Xu
-#uo0 = uo0[np.newaxis,:,:]
+uo0[:,:ny//2,:] = U0
+uo0[:,ny//2:,:] = -U0
+perturb = np.random.randn(nz*ny*nx).reshape(nz,ny,nx)
+perturb *= 1e-1/perturb.max()
+uo0 += perturb
+vo0 += perturb
 
-ho0 += 1e-6*np.random.randn((nz*ny*nx)).reshape(nz,ny,nx)
-
-uo0[:,1:-1,:] = -grav/fu0[:,1:-1,:]*(ho0[:,2:,:]-ho0[:,:-2,:])/(2*dy)
-
-uo0_yy = np.ma.zeros((nz,ny,nx))
-uo0_yy[:,1:-1,:] = (uo0[:,2:,:]-2.*uo0[:,1:-1,:]+uo0[:,:-2,:])/dy**2
+eta0[0,:,:] = 0
+eta0[1,:,:] = -H0
+#eta0 += perturb
+ho0 = eta0[:-1,:,:]-eta0[1:,:,:]
 
 maskt0[:,0,:] = 0.
 maskt0[:,-1,:] = 0.
@@ -103,11 +127,6 @@ if False:
   plt.show()
   sys.exit()
   # ---
-
-
-#eta_bot0[:,:ny//2,:] = H0
-#eta_bot0[:,ny//2:,:] = H0
-#H0 = 0.
 
 ix = np.array([nx//2])
 iy = np.array([ny//2])
