@@ -14,18 +14,19 @@ exec(open('./shallowpy_defaults.py').read())
 # Modify default parameters
 # -------------------------
 run = __file__.split('/')[-1][:-3]
-path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
+#path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
+path_data = f'/home/m/m300602/work/shallowpy/{run}_03/'
 
 nx = 256
-ny = 64
+ny = 128
 nt = 6000
-nt = 5000
+nt = 50000
 
 picture_frequency = 0
 output_frequency = 60
 diagnostic_frequency = output_frequency
 
-dx = 10e3
+dx = 1e3
 dy = dx
 #dt = 360.
 #dt = 60.
@@ -34,11 +35,11 @@ grav = 9.81
 rho = np.array([1024.])
 nz = rho.size
 
-H0 = 100.
+H0 = 1.
 cph = np.sqrt(grav*H0)
 #dist = dt*nt * cph
-dt  = 0.1*dx/np.sqrt(grav*H0)
-dt = 90.
+#dt  = 0.1*dx/np.sqrt(grav*H0)
+dt = 60.
 ##dt = 360.
 
 U0 = 1.
@@ -55,7 +56,8 @@ nspx = 1
 nspy = 1
 epsab = 0.01
 
-kh = 100.
+iRe = 5e-3
+kh = iRe*U0*dx
 Ah = kh
 
 f0 = 0.*1e-4
