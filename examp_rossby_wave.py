@@ -7,6 +7,8 @@ import glob
 import pyicon as pyic
 import argparse
 
+# After Early et al. 2011, JPO
+
 # Initialize default parameters
 # -----------------------------
 exec(open('./shallowpy_defaults.py').read())
@@ -16,24 +18,28 @@ exec(open('./shallowpy_defaults.py').read())
 run = __file__.split('/')[-1][:-3]
 path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
 
-fac = 2
+fac = 1
 nx = 200*fac
-ny = 200*fac
-nt = 1600*fac
+ny = 120*fac
+nt = 8000*fac
+#nt = 2
 
 picture_frequency = 0
 output_frequency = 50
 diagnostic_frequency = 50
 
+x0 = -1500e3
+y0 = -600e3
 dx = 10e3
 dy = dx
 #dt = 360.
 
-grav = 9.81
+#grav = 9.81
+grav = 0.01
 rho = np.array([1024.])
 nz = rho.size
 
-H0 = 10.
+H0 = 800.
 cph = np.sqrt(grav*H0)
 dist = dt*nt * cph
 dt  = 0.1*dx/np.sqrt(grav*H0)
@@ -48,7 +54,16 @@ Ah = kh
 
 f0 = 1e-4
 beta = 1e-11
-Y0 = ny*dy/2.
+R_earth = 6371e3
+f0 = 2 * 2*np.pi/86400*np.sin(24.*np.pi/180.)
+beta = 2 * 2*np.pi/86400/R_earth * np.cos(24.*np.pi/180.)
+#Y0 = ny*dy/2.
+
+Lr = np.sqrt(grav*H0)/f0
+c_grav = np.sqrt(grav*H0)
+c_ross = -beta*Lr**2 
+
+# c_grav/c_ross = f0*np.sqrt(grav*H0) / (beta*grav*H0) = f0/beta / np.sqrt(grav*H0)
 
 do_momentum_advection = False                   
 do_momentum_diffusion = False
@@ -56,6 +71,8 @@ do_momentum_coriolis_exp = False
 do_momentum_coriolis_imp = True
 do_momentum_pressure_gradient = True
 do_height_diffusion = False
+do_height_advection = True
+do_linear_height_advection = True
 
 # Initialize the grid and initial conditions
 # ------------------------------------------
@@ -65,7 +82,10 @@ exec(open('./shallowpy_grid_setup.py').read())
 # -------------------------
 #ho0 = 0.01*(Xt-Lx/2.)/Lx
 #ho0 = H0+0.1*np.sin(Xt/(Lx+dx)*2*np.pi*2)
-ho0 = H0+0.1*np.exp(-((Xt-0.5*Lx)**2+(Yt-0.5*Ly)**2)/(1.e-3*(Lx**2+Ly**2)))
+#L2 = 1.e-3*(Lx**2+Ly**2)
+L = 80e3
+#ho0 = H0+0.15*np.exp(-((Xt-0.75*Lx)**2+(Yt-0.5*Ly)**2)/L**2)
+ho0 = H0+0.15*np.exp(-(Xt**2+Yt**2)/L**2)
 ho0 = ho0[np.newaxis,:,:]
 #H0 = 0.
 #ho0 += H0
