@@ -1,7 +1,7 @@
 # Grid setup
 # ----------
-xu = np.arange(-x0, nx*dx-x0, dx)
-yu = np.arange(-y0, ny*dy-y0, dy)
+xu = np.arange(x0, x0+nx*dx, dx)
+yu = np.arange(y0, y0+ny*dy, dy)
 xt = np.concatenate((0.5*(xu[1:]+xu[:-1]),[xu[-1]+dx*0.5]))
 yt = np.concatenate((0.5*(yu[1:]+yu[:-1]),[yu[-1]+dy*0.5]))
 
