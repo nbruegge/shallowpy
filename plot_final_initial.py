@@ -1,6 +1,9 @@
 uo0 = xr.DataArray(uo0, dims=dimsu)
 vo0 = xr.DataArray(vo0, dims=dimsv)
 ho0 = xr.DataArray(ho0, dims=dimst)
+maskup = masku[:,nspy:-nspy, nspx:-nspx]
+maskvp = maskv[:,nspy:-nspy, nspx:-nspx]
+masktp = maskt[:,nspy:-nspy, nspx:-nspx]
 uo0 = uo0.where(maskup==1)
 vo0 = vo0.where(maskvp==1)
 ho0 = ho0.where(masktp==1)
