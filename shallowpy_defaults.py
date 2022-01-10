@@ -55,6 +55,7 @@ file_prfx = run
 nnp=0
 
 do_height_advection = True
+do_linear_height_advection = False
 do_height_diffusion = True
 do_height_stommel_arons = False
 do_height_forcing = False

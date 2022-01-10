@@ -1,3 +1,27 @@
+hop = ho[:,nspy:-nspy, nspx:-nspx]
+uop = uo[:,nspy:-nspy, nspx:-nspx]
+vop = vo[:,nspy:-nspy, nspx:-nspx]
+Tuo = dict()
+Tuo['tot'] = Tuo_tot[:,nspy:-nspy, nspx:-nspx]
+Tuo['adv'] = Tuo_adv[:,nspy:-nspy, nspx:-nspx]
+Tuo['dif'] = Tuo_dif[:,nspy:-nspy, nspx:-nspx]
+Tuo['pgd'] = Tuo_pgr[:,nspy:-nspy, nspx:-nspx]
+Tuo['cor'] = Tuo_cor[:,nspy:-nspy, nspx:-nspx]
+Tuo['vdf'] = Tuo_vdf[:,nspy:-nspy, nspx:-nspx]
+Tvo = dict()
+Tvo['tot'] = Tvo_tot[:,nspy:-nspy, nspx:-nspx]
+Tvo['adv'] = Tvo_adv[:,nspy:-nspy, nspx:-nspx]
+Tvo['dif'] = Tvo_dif[:,nspy:-nspy, nspx:-nspx]
+Tvo['pgd'] = Tvo_pgr[:,nspy:-nspy, nspx:-nspx]
+Tvo['cor'] = Tvo_cor[:,nspy:-nspy, nspx:-nspx]
+Tvo['vdf'] = Tvo_vdf[:,nspy:-nspy, nspx:-nspx]
+Tho = dict()
+Tho['tot'] = Tho_tot[:,nspy:-nspy, nspx:-nspx]
+Tho['adv'] = Tho_adv[:,nspy:-nspy, nspx:-nspx]
+Tho['dif'] = Tho_dif[:,nspy:-nspy, nspx:-nspx]
+Tho['mix'] = Tho_mix[:,nspy:-nspy, nspx:-nspx]
+Tho['con'] = Tho_con[:,nspy:-nspy, nspx:-nspx]
+Tho['for'] = Tho_for[:,nspy:-nspy, nspx:-nspx]
 
 # --- mom. tend.
 hca, hcb = pyic.arrange_axes(7,3, plot_cb=True, asp=1., fig_size_fac=1.,
