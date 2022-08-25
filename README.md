@@ -18,3 +18,8 @@ One good example is e.g. `notebooks/geostrophic_adjustment.ipynb`.
 
 The `examp_*.py` can be used but will most likely not be maintained anymore.
 
+## Getting an overview of different simulations
+
+Each notebook can be looked at via Github (simply click on it).
+Each notebook also contains an animation which can be displayed by entering the github address of the notebook
+to https://nbviewer.org/.
