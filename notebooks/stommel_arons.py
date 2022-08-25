@@ -194,7 +194,7 @@ ds.yt.max(), Ly
 iz = 0
 steps = [1, 20, 50, nps-1]
 
-hca, hcb = arrange_axes(2,2, plot_cb=True, asp=2., fig_size_fac=3, axlab_kw=None, 
+hca, hcb = arrange_axes(2,2, plot_cb=True, asp=2., fig_size_fac=3,
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 
@@ -213,8 +213,6 @@ for nn, ll in enumerate(steps):
 
 # ## Make an animation
 
-fpath
-
 # +
 path_fig = f'{path_data}/'
 fname_prf = run
@@ -232,7 +230,8 @@ ds = xr.open_mfdataset(fpath, **mfdset_kwargs)
 iz = 0
 ll=10
 
-hca, hcb = arrange_axes(1,1, plot_cb=True, asp=1., fig_size_fac=2, axlab_kw=None)
+hca, hcb = arrange_axes(1,1, plot_cb=True, asp=1.00, fig_size_fac=2,
+                        sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 fig = plt.gcf()
 
@@ -243,9 +242,6 @@ hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
 ax.set_title('h [m]')
 ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 
-for ax in hca:
-    ax.set_xlabel('x [km]')
-    ax.set_ylabel('y [km]')
 
 
 # -

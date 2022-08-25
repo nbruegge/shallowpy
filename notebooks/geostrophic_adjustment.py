@@ -139,7 +139,7 @@ nps
 iz = 0
 steps = [1, 5, 9, 14]
 
-hca, hcb = arrange_axes(2,2, plot_cb=True, asp=1., fig_size_fac=1.5, axlab_kw=None, 
+hca, hcb = arrange_axes(2,2, plot_cb=True, asp=1., fig_size_fac=1.5,
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 
@@ -171,7 +171,8 @@ ds = xr.open_mfdataset(fpath, **mfdset_kwargs)
 iz = 0
 ll=10
 
-hca, hcb = arrange_axes(3,1, plot_cb=True, asp=1., fig_size_fac=2, axlab_kw=None)
+hca, hcb = arrange_axes(3,1, plot_cb=True, asp=1.00, fig_size_fac=2,
+                        sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 fig = plt.gcf()
 
@@ -193,10 +194,6 @@ data = ds['vo'][ll,iz,:,:].compute()
 clim = 2e-2
 hm2 = shade(ds.xt/1e3, ds.yu/1e3, data, ax=ax, cax=cax, clim=clim)
 ax.set_title('v [m/s]')
-
-for ax in hca:
-    ax.set_xlabel('x [km]')
-    ax.set_ylabel('y [km]')
 
 
 # -
