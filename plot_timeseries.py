@@ -1,5 +1,5 @@
 # --- time series
-hca, hcb = pyic.arrange_axes(2,1, plot_cb=False, asp=0.5, fig_size_fac=1.5, sharex=False, sharey=False)
+hca, hcb = arrange_axes(2,1, plot_cb=False, asp=0.5, fig_size_fac=1.5, sharex=False, sharey=False)
 ii=-1
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import glob
-import pyicon as pyic
 import argparse
 
 help_text = """Driver for shallowpy.

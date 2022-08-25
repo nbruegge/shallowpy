@@ -9,7 +9,7 @@ vo0 = vo0.where(maskvp==1)
 ho0 = ho0.where(masktp==1)
 
 # --- fields
-hca, hcb = pyic.arrange_axes(3,3, plot_cb=True, asp=1., fig_size_fac=1.5)
+hca, hcb = arrange_axes(3,3, plot_cb=True, asp=1., fig_size_fac=1.5)
 ii=-1
 
 # --- ho
@@ -17,15 +17,15 @@ ii=-1
 clim_ho = 'sym'
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, ho0[0,:,:]-H0, ax=ax, cax=cax, clim=clim_ho)
+shade(xt/1e3, yt/1e3, ho0[0,:,:]-H0, ax=ax, cax=cax, clim=clim_ho)
 ax.set_title('ho: initial conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, hop[0,:,:]-H0, ax=ax, cax=cax, clim=clim_ho)
+shade(xt/1e3, yt/1e3, hop[0,:,:]-H0, ax=ax, cax=cax, clim=clim_ho)
 ax.set_title('ho: final conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, (hop-ho0)[0,:,:], ax=ax, cax=cax, clim=clim_ho)
+shade(xt/1e3, yt/1e3, (hop-ho0)[0,:,:], ax=ax, cax=cax, clim=clim_ho)
 ax.set_title('ho: final - initial conditions')
 
 # --- uo
@@ -33,15 +33,15 @@ ax.set_title('ho: final - initial conditions')
 clim_uo = 'sym'
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, uo0[0,:,:], ax=ax, cax=cax, clim=clim_uo)
+shade(xt/1e3, yt/1e3, uo0[0,:,:], ax=ax, cax=cax, clim=clim_uo)
 ax.set_title('uo: initial conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, uop[0,:,:], ax=ax, cax=cax, clim=clim_uo)
+shade(xt/1e3, yt/1e3, uop[0,:,:], ax=ax, cax=cax, clim=clim_uo)
 ax.set_title('uo: final conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, (uop-uo0)[0,:,:], ax=ax, cax=cax, clim=clim_uo)
+shade(xt/1e3, yt/1e3, (uop-uo0)[0,:,:], ax=ax, cax=cax, clim=clim_uo)
 ax.set_title('uo: final - initial conditions')
 
 # --- vo
@@ -49,13 +49,13 @@ ax.set_title('uo: final - initial conditions')
 clim_vo = 'sym'
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, vo0[0,:,:], ax=ax, cax=cax, clim=clim_vo)
+shade(xt/1e3, yt/1e3, vo0[0,:,:], ax=ax, cax=cax, clim=clim_vo)
 ax.set_title('vo: initial conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, vop[0,:,:], ax=ax, cax=cax, clim=clim_vo)
+shade(xt/1e3, yt/1e3, vop[0,:,:], ax=ax, cax=cax, clim=clim_vo)
 ax.set_title('vo: final conditions')
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
-pyic.shade(xt/1e3, yt/1e3, (vop-vo0)[0,:,:], ax=ax, cax=cax, clim=clim_vo)
+shade(xt/1e3, yt/1e3, (vop-vo0)[0,:,:], ax=ax, cax=cax, clim=clim_vo)
 ax.set_title('vo: final - initial conditions')

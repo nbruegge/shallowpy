@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import glob
-import pyicon as pyic
+#import pyicon as pyic
 import datetime
+#from shallowpy_plotting import arrange_axes, shade
 
 #class Settings(object):
 #  def __init__(self):
@@ -49,7 +50,7 @@ def create_output_var(nparr, dims, time=0):
 def timing(time_wc_ini, verbose=False):
   time_wc_now = datetime.datetime.now()
   #dt_wc = datetime.timedelta(seconds=(time_wc_now - time_wc_ini).total_seconds()/nnp)
-  dt_wc = (time_wc_now - time_wc_ini)/(nnp-1) * nt/output_frequency
+  dt_wc = (time_wc_now - time_wc_ini)/(ll+1) * nt
   time_wc_fin = time_wc_ini + dt_wc
   if verbose:
     print(f'nnp = {nnp}, Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_fin}')
@@ -467,7 +468,6 @@ for ll in range(nt):
     #print(f'll = {ll}/{nt}, ho.sum = {ho.sum()}, ke.sum = {ke.sum()}, cflu = {cflu}, cflv = {cflv}')
     #print(f'nnp = {nnp}, Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_fin}')
     print(f'll = {ll:6d}/{nt:6d}, Total run time: {dt_wc.total_seconds()/60:.2f}min, done at {time_wc_fin}, ho.sum = {ho.sum():2.1e}, ke.sum = {ke.sum():2.1e}, cflu = {cflu:2.1e}, cflv = {cflv:2.1e}', end='\r')
-    #print(f'nnp = {nnp}, Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_fin}')
 
   # Output variables
   # ----------------
@@ -512,33 +512,33 @@ for ll in range(nt):
     plt.close('all')
 
     # --- mom. tend.
-    hca, hcb = pyic.arrange_axes(5,3, plot_cb=True, asp=1., fig_size_fac=1.)
+    hca, hcb = arrange_axes(5,3, plot_cb=True, asp=1., fig_size_fac=1.)
     ii=-1
     
     clim = 'sym'
     
     ii+=1; ax=hca[ii]; cax=hcb[ii]
-    pyic.shade(xt/1e3, yt/1e3, uop[0,:,:], ax=ax, cax=cax, clim=clim)
-    #pyic.shade(xt/1e3, yt/1e3, vop[0,:,:], ax=ax, cax=cax, clim=clim)
+    shade(xt/1e3, yt/1e3, uop[0,:,:], ax=ax, cax=cax, clim=clim)
+    #shade(xt/1e3, yt/1e3, vop[0,:,:], ax=ax, cax=cax, clim=clim)
     ax.set_title(f'uo')
     
     ii+=1; ax=hca[ii]; cax=hcb[ii]
-    pyic.shade(xt/1e3, yt/1e3, hop[0,:,:], ax=ax, cax=cax, clim=clim)
+    shade(xt/1e3, yt/1e3, hop[0,:,:], ax=ax, cax=cax, clim=clim)
     ax.set_title(f'ho')
     
     for nn, var in enumerate(['tot', 'adv', 'dif']):
       ii+=1; ax=hca[ii]; cax=hcb[ii]
-      pyic.shade(xt/1e3, yt/1e3, Tho[var][0,:,:], ax=ax, cax=cax, clim=clim)
+      shade(xt/1e3, yt/1e3, Tho[var][0,:,:], ax=ax, cax=cax, clim=clim)
       ax.set_title(f'Tho_{var}')
     
     for nn, var in enumerate(['tot', 'adv', 'dif', 'pgd', 'cor']):
       ii+=1; ax=hca[ii]; cax=hcb[ii]
-      pyic.shade(xt/1e3, yt/1e3, Tuo[var][0,:,:], ax=ax, cax=cax, clim=clim)
+      shade(xt/1e3, yt/1e3, Tuo[var][0,:,:], ax=ax, cax=cax, clim=clim)
       ax.set_title(f'Tuo_{var}')
     
     for nn, var in enumerate(['tot', 'adv', 'dif', 'pgd', 'cor']):
       ii+=1; ax=hca[ii]; cax=hcb[ii]
-      pyic.shade(xt/1e3, yt/1e3, Tvo[var][0,:,:], ax=ax, cax=cax, clim=clim)
+      shade(xt/1e3, yt/1e3, Tvo[var][0,:,:], ax=ax, cax=cax, clim=clim)
       ax.set_title(f'Tvo_{var}')
 
     fpath = f'{path_data}/{fig_prfx}_{nnf:04d}.png'
@@ -552,5 +552,5 @@ print('')
 print('--- All done! ---')
 time_wc_now = datetime.datetime.now()
 dt_wc = (time_wc_now - time_wc_ini)
-print(f'Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_now}')
+print(f'Total run time: {dt_wc.total_seconds()/60:.2f}min, done at {time_wc_now}')
 print('------')
