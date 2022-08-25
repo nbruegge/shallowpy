@@ -1,0 +1,25 @@
+name: shallowpy_py39
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - conda-build
+  - numpy
+  - xarray      
+  - matplotlib
+#  - scipy
+#  - netcdf4
+#  - ipdb
+#  - ipympl      # interactive plots in jupyterlab
+#  - nodejs      # interactive plots in jupyterlab
+  - ipython     
+  - jupyter     
+  - jupyterlab  # optional
+  - jupyter-resource-usage # for showing memory resources in upper right corner of notebook
+  - jupyter_contrib_nbextensions
+  - jupytext
+  - papermill
+#  - cmocean     # optional
+#  - sphinx      # optional for documentation
+#  - mpi4py      
+#  - pandas
