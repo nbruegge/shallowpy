@@ -290,12 +290,6 @@ time = 0.
 time_wc_ini = datetime.datetime.now()
 for ll in range(nt):
   time += dt
-
-  if ll%diagnostic_frequency==0:
-    cflu = dt/dx*uo.max()
-    cflv = dt/dy*vo.max()
-    ke = 0.5*(uo**2+vo**2)
-    print(f'll = {ll}/{nt}, ho.sum = {ho.sum()}, ke.sum = {ke.sum()}, cflu = {cflu}, cflv = {cflv}')
   
   # Diffusion
   # ---------
@@ -457,6 +451,16 @@ for ll in range(nt):
   vo_ts[ll,:] = vo[0,iy,ix]
   ho_ts[ll,:] = ho[0,iy,ix]
 
+  if ll%diagnostic_frequency==0:
+    cflu = dt/dx*uo.max()
+    cflv = dt/dy*vo.max()
+    ke = 0.5*(uo**2+vo**2)
+    dt_wc, time_wc_fin = timing(time_wc_ini, verbose=False)
+    #print(f'll = {ll}/{nt}, ho.sum = {ho.sum()}, ke.sum = {ke.sum()}, cflu = {cflu}, cflv = {cflv}')
+    #print(f'nnp = {nnp}, Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_fin}')
+    print(f'll = {ll:6d}/{nt:6d}, Total run time: {dt_wc.total_seconds()/60:.2f}min, done at {time_wc_fin}, ho.sum = {ho.sum():2.1e}, ke.sum = {ke.sum():2.1e}, cflu = {cflu:2.1e}, cflv = {cflv:2.1e}', end='\r')
+    #print(f'nnp = {nnp}, Total run time: {dt_wc.total_seconds()/60:.1f}min, done at {time_wc_fin}')
+
   # Output variables
   # ----------------
   if output_frequency!=0 and ll%output_frequency==0:
@@ -468,11 +472,8 @@ for ll in range(nt):
     ds['vo'] = create_output_var(vo, dimsv)
     ds['ho'] = create_output_var(ho, dimst)
     fpath = f'{path_data}/{file_prfx}_{nnp:04d}.nc'
-    print(f'Save file {fpath}')
+    #print(f'Save file {fpath}')
     ds.to_netcdf(fpath)
-
-    if nnp!=1:
-      dt_wc, time_wc_fin = timing(time_wc_ini, verbose=True)
 
 
   # Plot variables
@@ -539,6 +540,7 @@ for ll in range(nt):
   # Write restart
   # -------------
 
+print('')
 print('--- All done! ---')
 time_wc_now = datetime.datetime.now()
 dt_wc = (time_wc_now - time_wc_ini)
