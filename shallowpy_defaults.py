@@ -55,6 +55,7 @@ file_prfx = run
 nnp=0
 
 do_height_advection = True
+do_upwind_advection = True
 do_linear_height_advection = False
 do_height_diffusion = True
 do_height_stommel_arons = False
@@ -62,7 +63,8 @@ do_height_forcing = False
 do_momentum_drag = False
 do_momentum_advection = True
 do_momentum_diffusion = True
-do_momentum_coriolis = True
+do_momentum_coriolis_imp = True
+do_momentum_coriolis_exp = False
 do_momentum_pressure_gradient = True
 do_momentum_windstress = True
 do_momentum_forcing = False

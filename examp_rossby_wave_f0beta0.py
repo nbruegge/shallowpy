@@ -17,7 +17,7 @@ exec(open('./shallowpy_defaults.py').read())
 mode = sys.argv[1]
 #iid = int(sys.argv[2])
 iRe = sys.argv[2]
-init_with_geostrophic_adjustment = True
+init_with_geostrophic_adjustment = False
 do_upwind_advection = False
 
 if sys.argv[1]=='linear':
@@ -61,7 +61,8 @@ fac = 1
 dt_fac = 0.5
 nx = 200*fac
 ny = 120*fac
-nt = int(180000*fac/dt_fac)
+#nt = int(180000*fac/dt_fac)
+nt = int(1800*fac/dt_fac)
 #nt = 10
 
 picture_frequency = 0
@@ -103,8 +104,8 @@ Ah = iRe*U0*dx
 #f0 = 1e-4
 #beta = 1e-11
 R_earth = 6371e3
-f0 = 2 * 2*np.pi/86400*np.sin(24.*np.pi/180.)
-beta = 2 * 2*np.pi/86400/R_earth * np.cos(24.*np.pi/180.)
+f0 = 0 * 2 * 2*np.pi/86400*np.sin(24.*np.pi/180.)
+beta = 0 * 2 * 2*np.pi/86400/R_earth * np.cos(24.*np.pi/180.)
 #Y0 = ny*dy/2.
 
 Lr = np.sqrt(grav*H0)/f0
