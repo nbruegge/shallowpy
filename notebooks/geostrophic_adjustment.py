@@ -37,30 +37,26 @@ exec(open('../shallowpy_defaults.py').read())
 # +
 # Modify default parameters
 # -------------------------
-# run = __file__.split('/')[-1][:-3]
-run = 'kelvin_wave'
-path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'                         
-                                                                                     
-nx = 100                                                                             
-ny = 100                                                                             
-nt = 2000                                                                            
-#nt = 500                                                                            
-#nt = 1                                                                              
-                                                                                     
-picture_frequency = 0                                                                
-output_frequency = 20                                                                
-diagnostic_frequency = output_frequency                                              
-                                                                                     
-dx = 10e3                                                                            
-dy = dx                                                                              
-#dt = 360.                                                                           
-                                                                                     
-#grav = 9.81                                                                         
-grav = 0.02                                                                          
-rho = np.array([1024.])                                                              
-nz = rho.size                                                                        
-                                                                                     
-H0 = 100.                                                                            
+run = 'geostrophic_adjustment'
+path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
+
+fac = 1
+nx = 100*fac
+ny = 100*fac
+nt = 750
+
+picture_frequency = 0
+output_frequency = 25
+diagnostic_frequency = output_frequency
+
+dx = 10e3
+dy = dx
+
+grav = 9.81
+rho = np.array([1024.])
+nz = rho.size
+
+H0 = 10.
 cph = np.sqrt(grav*H0)
 dist = dt*nt * cph
 dt  = 0.1*dx/np.sqrt(grav*H0)
@@ -90,18 +86,12 @@ exec(open('../shallowpy_grid_setup.py').read())
 # +
 # Modify initial conditions
 # -------------------------
-eta0[0,:,:] = 0.1*np.exp(-((Xt-0.5*Lx)**2+(Yt-Ly)**2)/(1.e-3*(Lx**2+Ly**2)))
+eta0[0,:,:] = 0.1*np.exp(-((Xt-0.5*Lx)**2+(Yt-0.5*Ly)**2)/(1.e-3*(Lx**2+Ly**2)))
 eta0[1,:,:] = -H0
-
 ho0 = eta0[:-1,:,:]-eta0[1:,:,:]
 
-maskt0[:,0,:] = 0.
-maskt0[:,-1,:] = 0.
-maskt0[:,:,0] = 0.
-maskt0[:,:,-1] = 0.
-
 ix = np.array([nx//2])
-iy = np.array([1*ny//4])
+iy = np.array([ny//2])
 # -
 
 # ## Run the model
@@ -133,6 +123,12 @@ if True:
     ds['vo'] = ds.vo.where(maskvp==1)
     ds.to_netcdf(fpath)
 
+# +
+# from dask.diagnostics import ProgressBar
+# with ProgressBar():
+#     ds.to_netcdf(fpath)
+# -
+
 # ## Plot overview
 
 nps = ds.time.size
@@ -141,7 +137,7 @@ nps
 # +
 # prepare the animation
 iz = 0
-steps = [10, 40, 60, 99]
+steps = [1, 5, 9, 14]
 
 hca, hcb = arrange_axes(2,2, plot_cb=True, asp=1., fig_size_fac=1.5, axlab_kw=None, 
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
@@ -150,7 +146,7 @@ ii=-1
 for nn, ll in enumerate(steps):
     ii+=1; ax=hca[ii]; cax=hcb[ii]
     data = ds['ho'][ll,iz,:,:].compute()
-    clim = [0, 1e-2]
+    clim = 2e-2
     hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
     ax.set_title('h [m]')
     ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
@@ -175,16 +171,28 @@ ds = xr.open_mfdataset(fpath, **mfdset_kwargs)
 iz = 0
 ll=10
 
-hca, hcb = arrange_axes(1,1, plot_cb=True, asp=1., fig_size_fac=2, axlab_kw=None)
+hca, hcb = arrange_axes(3,1, plot_cb=True, asp=1., fig_size_fac=2, axlab_kw=None)
 ii=-1
 fig = plt.gcf()
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
 data = ds['ho'][ll,iz,:,:].compute()
-clim = [0, 1e-2]
-hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
+clim = 2e-2
+hm0 = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
 ax.set_title('h [m]')
 ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
+
+ii+=1; ax=hca[ii]; cax=hcb[ii]
+data = ds['uo'][ll,iz,:,:].compute()
+clim = 2e-2
+hm1 = shade(ds.xu/1e3, ds.yt/1e3, data, ax=ax, cax=cax, clim=clim)
+ax.set_title('u [m/s]')
+
+ii+=1; ax=hca[ii]; cax=hcb[ii]
+data = ds['vo'][ll,iz,:,:].compute()
+clim = 2e-2
+hm2 = shade(ds.xt/1e3, ds.yu/1e3, data, ax=ax, cax=cax, clim=clim)
+ax.set_title('v [m/s]')
 
 for ax in hca:
     ax.set_xlabel('x [km]')
@@ -197,7 +205,11 @@ for ax in hca:
 def run(ll):
     print(f'll = {ll} / {ds.time.size}', end='\r')
     data = ds['ho'][ll,iz,:,:].data - H0
-    hm[0].set_array(data.flatten())
+    hm0[0].set_array(data.flatten())
+    data = ds['uo'][ll,iz,:,:].data
+    hm1[0].set_array(data.flatten())
+    data = ds['vo'][ll,iz,:,:].data
+    hm2[0].set_array(data.flatten())
     ht.set_text(f'{ds.time[ll].data/86400.:.1f}days')
 
 

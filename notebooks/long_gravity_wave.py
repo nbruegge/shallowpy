@@ -37,30 +37,25 @@ exec(open('../shallowpy_defaults.py').read())
 # +
 # Modify default parameters
 # -------------------------
-# run = __file__.split('/')[-1][:-3]
-run = 'kelvin_wave'
-path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'                         
-                                                                                     
-nx = 100                                                                             
-ny = 100                                                                             
-nt = 2000                                                                            
-#nt = 500                                                                            
-#nt = 1                                                                              
-                                                                                     
-picture_frequency = 0                                                                
-output_frequency = 20                                                                
-diagnostic_frequency = output_frequency                                              
-                                                                                     
-dx = 10e3                                                                            
-dy = dx                                                                              
-#dt = 360.                                                                           
-                                                                                     
-#grav = 9.81                                                                         
-grav = 0.02                                                                          
-rho = np.array([1024.])                                                              
-nz = rho.size                                                                        
-                                                                                     
-H0 = 100.                                                                            
+run = 'long_gravity_wave'
+path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
+
+nx = 100
+ny = 100
+nt = 500
+
+picture_frequency = 0
+output_frequency = 20
+diagnostic_frequency = output_frequency
+
+dx = 10e3
+dy = dx
+
+grav = 9.81
+rho = np.array([1024.])
+nz = rho.size
+
+H0 = 1000.
 cph = np.sqrt(grav*H0)
 dist = dt*nt * cph
 dt  = 0.1*dx/np.sqrt(grav*H0)
@@ -78,7 +73,7 @@ beta = 0.*1e-11
 do_momentum_advection = False
 do_momentum_diffusion = False
 do_momentum_coriolis_exp = False
-do_momentum_coriolis_imp = True
+do_momentum_coriolis_imp = False
 do_momentum_pressure_gradient = True
 do_height_diffusion = False
 # -
@@ -90,16 +85,31 @@ exec(open('../shallowpy_grid_setup.py').read())
 # +
 # Modify initial conditions
 # -------------------------
-eta0[0,:,:] = 0.1*np.exp(-((Xt-0.5*Lx)**2+(Yt-Ly)**2)/(1.e-3*(Lx**2+Ly**2)))
-eta0[1,:,:] = -H0
-
+#ho0 = 0.01*(Xt-Lx/2.)/Lx
+#ho0 = H0+0.1*np.sin(Xt/(Lx+dx)*2*np.pi*2)
+eta0[0,:,:] = 0.1*np.exp(-((Xt-0.5*Lx)**2)/(1.e-3*(Lx**2+Ly**2)))
+eta0[1,:ny//2,:] = -H0
+eta0[1,ny//2:,:] = -H0/2.
+#ho0[:ny//2,:] += H0
+#ho0[ny//2:,:] += H0/2.
+#ho0 = ho0[np.newaxis,:,:]
+#H0 = 0.
+#ho0 += H0
 ho0 = eta0[:-1,:,:]-eta0[1:,:,:]
+
+#uo0 = cph + 0.*Xu
+#uo0 = uo0[np.newaxis,:,:]
 
 maskt0[:,0,:] = 0.
 maskt0[:,-1,:] = 0.
-maskt0[:,:,0] = 0.
-maskt0[:,:,-1] = 0.
+maskt0[:,ny//2-1:ny//2+1,:] = 0.
 
+#eta_bot0[:,:ny//2,:] = H0
+#eta_bot0[:,ny//2:,:] = H0
+#H0 = 0.
+
+#ix = np.array([nx//2, nx//2])
+#iy = np.array([1*ny//4, 3*ny//4])
 ix = np.array([nx//2])
 iy = np.array([1*ny//4])
 # -
@@ -140,8 +150,9 @@ nps
 
 # +
 # prepare the animation
+var = 'ho'
 iz = 0
-steps = [10, 40, 60, 99]
+steps = [1, 5, 10, nps-1]
 
 hca, hcb = arrange_axes(2,2, plot_cb=True, asp=1., fig_size_fac=1.5, axlab_kw=None, 
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
@@ -150,8 +161,10 @@ ii=-1
 for nn, ll in enumerate(steps):
     ii+=1; ax=hca[ii]; cax=hcb[ii]
     data = ds['ho'][ll,iz,:,:].compute()
-    clim = [0, 1e-2]
-    hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
+    clim = 5e-2
+    data[:ny//2,:] += -H0
+    data[ny//2:,:] += -H0/2.
+    hm = shade(ds.xt/1e3, ds.yt/1e3, data, ax=ax, cax=cax, clim=clim)
     ax.set_title('h [m]')
     ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 # -
@@ -181,8 +194,10 @@ fig = plt.gcf()
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
 data = ds['ho'][ll,iz,:,:].compute()
-clim = [0, 1e-2]
-hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
+data[:ny//2,:] += -H0
+data[ny//2:,:] += -H0/2.
+clim = 5e-2
+hm = shade(ds.xt/1e3, ds.yt/1e3, data, ax=ax, cax=cax, clim=clim)
 ax.set_title('h [m]')
 ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 
@@ -196,7 +211,9 @@ for ax in hca:
 # function for updating the animation
 def run(ll):
     print(f'll = {ll} / {ds.time.size}', end='\r')
-    data = ds['ho'][ll,iz,:,:].data - H0
+    data = ds[var][ll,iz,:,:].data
+    data[:ny//2,:] += -H0
+    data[ny//2:,:] += -H0/2.
     hm[0].set_array(data.flatten())
     ht.set_text(f'{ds.time[ll].data/86400.:.1f}days')
 
