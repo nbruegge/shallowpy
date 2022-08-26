@@ -46,7 +46,7 @@ iy = np.array([0])
 
 # Output
 # ------
-run = 'test'
+run = 'shallowpy'
 path_data = f'/Users/nbruegge/work/movies/shallow_py/{run}/'
 
 fig_prfx = run 

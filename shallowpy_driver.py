@@ -7,6 +7,8 @@ import glob
 import argparse
 
 help_text = """Driver for shallowpy.
+
+!!! This was experimental but should not be used. !!!
 """
 
 # --- read input arguments
