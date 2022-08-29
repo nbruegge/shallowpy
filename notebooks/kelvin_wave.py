@@ -161,7 +161,7 @@ for nn, ll in enumerate(steps):
 # +
 path_fig = f'{path_data}/'
 fname_prf = run
-fpath = f'{path_data}/test_combined.nc'
+fpath = f'{path_data}/shallowpy_combined.nc'
 
 mfdset_kwargs = dict(combine='nested', concat_dim='time',
                      data_vars='minimal', coords='minimal', compat='override', join='override',
@@ -211,5 +211,7 @@ ani.save(fpath_fig, writer='ffmpeg', fps=40)
 
 # %%time
 HTML(ani.to_jshtml())
+
+
 
 

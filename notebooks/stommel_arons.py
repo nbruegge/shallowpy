@@ -187,14 +187,12 @@ if True:
 nps = ds.time.size
 nps
 
-ds.yt.max(), Ly
-
 # +
 # prepare the animation
 iz = 0
 steps = [1, 20, 50, nps-1]
 
-hca, hcb = arrange_axes(2,2, plot_cb=True, asp=2., fig_size_fac=3,
+hca, hcb = arrange_axes(2,2, plot_cb=True, asp=2., fig_size_fac=3.5,
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 
@@ -203,21 +201,18 @@ conts = np.linspace(-12,6,51)
 for nn, ll in enumerate(steps):
     ii+=1; ax=hca[ii]; cax=hcb[ii]
     data = ds['ho'][ll,iz,:,:].compute()
-    # clim = 5e-2
-    # clim = 'auto'
-    clim = [-12, 2]
-    hm = shade(ds.xt/1e3, (ds.yt-Ly/2.)/1e3, data-H0, conts=conts, ax=ax, cax=cax, clim=clim)
-    ax.set_title('h [m]')
+    data += -data.mean()
+    clim = 0.8
+    hm = shade(ds.xt/1e3, (ds.yt-Ly/2.)/1e3, data, conts=conts, ax=ax, cax=cax, clim=clim)
+    ax.set_title('h - <h> [m]')
     ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 # -
 
 # ## Make an animation
 
-# +
 path_fig = f'{path_data}/'
+fpath = f'{path_data}/shallowpy_combined.nc'
 fname_prf = run
-fpath = f'{path_data}/test_combined.nc'
-
 mfdset_kwargs = dict(combine='nested', concat_dim='time',
                      data_vars='minimal', coords='minimal', compat='override', join='override',
                     )
@@ -230,18 +225,18 @@ ds = xr.open_mfdataset(fpath, **mfdset_kwargs)
 iz = 0
 ll=10
 
-hca, hcb = arrange_axes(1,1, plot_cb=True, asp=1.00, fig_size_fac=2,
+hca, hcb = arrange_axes(1,1, plot_cb=True, asp=2.00, fig_size_fac=3.5,
                         sharex=False, sharey=False, xlabel='x [km]', ylabel='y [km]')
 ii=-1
 fig = plt.gcf()
 
 ii+=1; ax=hca[ii]; cax=hcb[ii]
 data = ds['ho'][ll,iz,:,:].compute()
-clim = 5e-2
-hm = shade(ds.xt/1e3, ds.yt/1e3, data-H0, ax=ax, cax=cax, clim=clim)
-ax.set_title('h [m]')
+data += -data.mean()
+clim = 0.8
+hm = shade(ds.xt/1e3, ds.yt/1e3, data, ax=ax, cax=cax, clim=clim)
+ax.set_title('h - <h> [m]')
 ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
-
 
 
 # -
@@ -249,7 +244,8 @@ ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 # function for updating the animation
 def run(ll):
     print(f'll = {ll} / {ds.time.size}', end='\r')
-    data = ds['ho'][ll,iz,:,:].data - H0
+    data = ds['ho'][ll,iz,:,:].compute().to_masked_array()
+    data += -data.mean()
     hm[0].set_array(data.flatten())
     ht.set_text(f'{ds.time[ll].data/86400.:.1f}days')
 
@@ -267,5 +263,7 @@ ani.save(fpath_fig, writer='ffmpeg', fps=40)
 
 # %%time
 HTML(ani.to_jshtml())
+
+
 
 

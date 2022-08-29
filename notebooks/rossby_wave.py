@@ -30,6 +30,8 @@ from shallowpy_plotting import arrange_axes, shade
 
 # ## Initialize the model
 
+# Setup following Early et al. 2011, JPO
+
 # Initialize default parameters                                                      
 # -----------------------------                                                      
 exec(open('../shallowpy_defaults.py').read()) 
@@ -200,7 +202,7 @@ for nn, ll in enumerate(steps):
 # +
 path_fig = f'{path_data}/'
 fname_prf = run
-fpath = f'{path_data}/test_combined.nc'
+fpath = f'{path_data}/shallowpy_combined.nc'
 
 mfdset_kwargs = dict(combine='nested', concat_dim='time',
                      data_vars='minimal', coords='minimal', compat='override', join='override',

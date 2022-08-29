@@ -13,10 +13,12 @@
 #     name: python3
 # ---
 
+# + papermill={"duration": 1.1145, "end_time": "2022-08-26T10:18:37.490834", "exception": false, "start_time": "2022-08-26T10:18:36.376334", "status": "completed"} tags=[]
 # %load_ext autoreload
 # %autoreload 2
 # %matplotlib inline
 
+# + papermill={"duration": 1.546376, "end_time": "2022-08-26T10:18:39.052443", "exception": false, "start_time": "2022-08-26T10:18:37.506067", "status": "completed"} tags=[]
 import xarray as xr                                                                  
 import numpy as np                                                                   
 import matplotlib.pyplot as plt
@@ -28,13 +30,15 @@ from IPython.display import HTML
 sys.path.append('../')
 from shallowpy_plotting import arrange_axes, shade
 
+# + [markdown] papermill={"duration": 0.012879, "end_time": "2022-08-26T10:18:39.079348", "exception": false, "start_time": "2022-08-26T10:18:39.066469", "status": "completed"} tags=[]
 # ## Initialize the model
 
+# + papermill={"duration": 0.055364, "end_time": "2022-08-26T10:18:39.151745", "exception": false, "start_time": "2022-08-26T10:18:39.096381", "status": "completed"} tags=[]
 # Initialize default parameters                                                      
 # -----------------------------                                                      
 exec(open('../shallowpy_defaults.py').read()) 
 
-# +
+# + papermill={"duration": 0.05318, "end_time": "2022-08-26T10:18:39.220099", "exception": false, "start_time": "2022-08-26T10:18:39.166919", "status": "completed"} tags=[]
 # Modify default parameters
 # -------------------------
 run = 'long_gravity_wave'
@@ -76,13 +80,13 @@ do_momentum_coriolis_exp = False
 do_momentum_coriolis_imp = False
 do_momentum_pressure_gradient = True
 do_height_diffusion = False
-# -
 
+# + papermill={"duration": 0.048357, "end_time": "2022-08-26T10:18:39.282215", "exception": false, "start_time": "2022-08-26T10:18:39.233858", "status": "completed"} tags=[]
 # Initialize the grid and initial conditions
 # ------------------------------------------
 exec(open('../shallowpy_grid_setup.py').read())
 
-# +
+# + papermill={"duration": 0.056366, "end_time": "2022-08-26T10:18:39.352256", "exception": false, "start_time": "2022-08-26T10:18:39.295890", "status": "completed"} tags=[]
 # Modify initial conditions
 # -------------------------
 #ho0 = 0.01*(Xt-Lx/2.)/Lx
@@ -112,20 +116,24 @@ maskt0[:,ny//2-1:ny//2+1,:] = 0.
 #iy = np.array([1*ny//4, 3*ny//4])
 ix = np.array([nx//2])
 iy = np.array([1*ny//4])
-# -
 
+# + [markdown] papermill={"duration": 0.014051, "end_time": "2022-08-26T10:18:39.380689", "exception": false, "start_time": "2022-08-26T10:18:39.366638", "status": "completed"} tags=[]
 # ## Run the model
 
+# + papermill={"duration": 2.745671, "end_time": "2022-08-26T10:18:42.141606", "exception": false, "start_time": "2022-08-26T10:18:39.395935", "status": "completed"} tags=[]
 # Run the model
 # -------------
 exec(open('../shallowpy_main.py').read())
 
+# + [markdown] papermill={"duration": 0.015096, "end_time": "2022-08-26T10:18:42.174815", "exception": false, "start_time": "2022-08-26T10:18:42.159719", "status": "completed"} tags=[]
 # ## Post-process the result
 
+# + papermill={"duration": 0.058064, "end_time": "2022-08-26T10:18:42.250589", "exception": false, "start_time": "2022-08-26T10:18:42.192525", "status": "completed"} tags=[]
 # Do post-processing
 # ------------------
 exec(open('../pp_main.py').read())
 
+# + papermill={"duration": 0.740798, "end_time": "2022-08-26T10:18:43.006992", "exception": false, "start_time": "2022-08-26T10:18:42.266194", "status": "completed"} tags=[]
 # %%time
 # Combine all netcdf files
 # ------------------------
@@ -143,12 +151,14 @@ if True:
     ds['vo'] = ds.vo.where(maskvp==1)
     ds.to_netcdf(fpath)
 
+# + [markdown] papermill={"duration": 0.015921, "end_time": "2022-08-26T10:18:43.039205", "exception": false, "start_time": "2022-08-26T10:18:43.023284", "status": "completed"} tags=[]
 # ## Plot overview
 
+# + papermill={"duration": 0.053447, "end_time": "2022-08-26T10:18:43.108989", "exception": false, "start_time": "2022-08-26T10:18:43.055542", "status": "completed"} tags=[]
 nps = ds.time.size
 nps
 
-# +
+# + papermill={"duration": 0.667922, "end_time": "2022-08-26T10:18:43.795511", "exception": false, "start_time": "2022-08-26T10:18:43.127589", "status": "completed"} tags=[]
 # prepare the animation
 iz = 0
 steps = [1, 5, 10, nps-1]
@@ -166,14 +176,14 @@ for nn, ll in enumerate(steps):
     hm = shade(ds.xt/1e3, ds.yt/1e3, data, ax=ax, cax=cax, clim=clim)
     ax.set_title('h [m]')
     ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
-# -
 
+# + [markdown] papermill={"duration": 0.02007, "end_time": "2022-08-26T10:18:43.833496", "exception": false, "start_time": "2022-08-26T10:18:43.813426", "status": "completed"} tags=[]
 # ## Make an animation
 
-# +
+# + papermill={"duration": 0.070229, "end_time": "2022-08-26T10:18:43.922035", "exception": false, "start_time": "2022-08-26T10:18:43.851806", "status": "completed"} tags=[]
 path_fig = f'{path_data}/'
 fname_prf = run
-fpath = f'{path_data}/test_combined.nc'
+fpath = f'{path_data}/shallowpy_combined.nc'
 
 mfdset_kwargs = dict(combine='nested', concat_dim='time',
                      data_vars='minimal', coords='minimal', compat='override', join='override',
@@ -181,7 +191,7 @@ mfdset_kwargs = dict(combine='nested', concat_dim='time',
 ds = xr.open_mfdataset(fpath, **mfdset_kwargs)
 #ds = ds.compute()
 
-# +
+# + papermill={"duration": 0.206921, "end_time": "2022-08-26T10:18:44.146548", "exception": false, "start_time": "2022-08-26T10:18:43.939627", "status": "completed"} tags=[]
 # prepare the animation
 
 iz = 0
@@ -202,8 +212,7 @@ ax.set_title('h [m]')
 ht = ax.set_title(f'{ds.time[ll].data/86400.:.1f}days', loc='right')
 
 
-# -
-
+# + papermill={"duration": 0.054398, "end_time": "2022-08-26T10:18:44.220437", "exception": false, "start_time": "2022-08-26T10:18:44.166039", "status": "completed"} tags=[]
 # function for updating the animation
 def run(ll):
     print(f'll = {ll} / {ds.time.size}', end='\r')
@@ -214,6 +223,7 @@ def run(ll):
     ht.set_text(f'{ds.time[ll].data/86400.:.1f}days')
 
 
+# + papermill={"duration": 1.54999, "end_time": "2022-08-26T10:18:45.789239", "exception": false, "start_time": "2022-08-26T10:18:44.239249", "status": "completed"} tags=[]
 # %%time
 # --- save the animation
 ani = animation.FuncAnimation(fig, run, ds.time.size)
@@ -223,9 +233,15 @@ fpath_fig = f'{path_fig}/{fname_prf}.mp4'
 print(f'Saving {fpath_fig}')
 ani.save(fpath_fig, writer='ffmpeg', fps=40)
 
+# + [markdown] papermill={"duration": 0.022032, "end_time": "2022-08-26T10:18:45.830832", "exception": false, "start_time": "2022-08-26T10:18:45.808800", "status": "completed"} tags=[]
 # ## Showing the animation
 
+# + papermill={"duration": 1.671754, "end_time": "2022-08-26T10:18:47.522191", "exception": false, "start_time": "2022-08-26T10:18:45.850437", "status": "completed"} tags=[]
 # %%time
 HTML(ani.to_jshtml())
+
+# + papermill={"duration": 0.029695, "end_time": "2022-08-26T10:18:47.582490", "exception": false, "start_time": "2022-08-26T10:18:47.552795", "status": "completed"} tags=[]
+
+# -
 
 
